@@ -61,7 +61,7 @@ void sort_array(unsigned char* arr, unsigned int size) {
   int i;	
   for (i = 0; i < size; ++i) {
     insert = arr[i];
-      int moveItem = i;
+    int moveItem = i;
 	  
     while (moveItem > 0 && arr[moveItem - 1] < insert) {
       arr[moveItem] = arr[moveItem - 1];
