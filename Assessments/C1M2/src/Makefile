@@ -12,7 +12,7 @@
 #------------------------------------------------------------------------------
 # Below are the instructions use for the C1M2 Assessment
 #
-# Use: make [TARGET] [PLATFORM-OVERRIDES]
+# Use: make [TARGET] [PLATFORM=OVERRIDES]
 #
 # Build Targets:
 #      <FILE>.i - Builds <FILE>.i preprocessed file
@@ -26,17 +26,21 @@
 #
 # Platform Overrides:
 #      PLATFORM - The target platform you are compiling for (MASP432, HOST)
+#
+# Other Overrides:
 #      TARGET - Name of output executable
 #      STD - Compiler standard version (c89, c99)
 #
 #------------------------------------------------------------------------------
 
-# Platform Overrides
-PLATFORM = MSP432  # Default Platform
-TARGET = c1m2
-STD = c99
+# Platform Overrides (Default Platform)
+PLATFORM = MSP432
 
 include sources.mk
+
+# Other Overrides
+TARGET = c1m2
+STD = c99
 
 # General Flags
 GFLAGS = -std=$(STD) -g -Wall -Werror -O0
@@ -119,4 +123,4 @@ compile-all: $(SOURCES)
 # Remove all compiled objects, preprocessed outputs, assembly outputs, executable files and build output files.
 .PHONY: clean
 clean:
-	rm -f $(OBJECTS) $(ASSEMBLIES) $(PREPROCESSED) $(DEPENDENCIES) $(TARGET).out $(TARGET).map *.dump
+	rm -f *.d *.i *.o *.asm *.out *.map *.dump

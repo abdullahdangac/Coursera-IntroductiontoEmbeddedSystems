@@ -9,26 +9,19 @@
 #
 #*****************************************************************************
 
-# Platform Overrides
-PLATFORM = MSP432
-
-# Add your Source files to this variable
 ifeq ($(PLATFORM),MSP432)
 	SOURCES = main.c \
-              memory.c \
-              system_msp432p401r.c \
-              startup_msp432p401r_gcc.c \
-              interrupts_msp432p401r_gcc.c
-else
-	SOURCES = main.c \
-              memory.c
-endif
+                  memory.c \
+                  system_msp432p401r.c \
+                  startup_msp432p401r_gcc.c \
+                  interrupts_msp432p401r_gcc.c
 
-# Add your include paths to this variable
-ifeq ($(PLATFORM),MSP432)
 	INCLUDES = -I../include/CMSIS \
-               -I../include/common \
-               -I../include/msp432
+                   -I../include/common \
+                   -I../include/msp432
 else
+	SOURCES = main.c \
+                  memory.c
+
 	INCLUDES = -I../include/common
 endif
