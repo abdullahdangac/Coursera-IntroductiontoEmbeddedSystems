@@ -12,7 +12,7 @@
 #------------------------------------------------------------------------------
 # Below are the instructions use for the C1M2 Assessment
 #
-# Use: make [TARGET] [PLATFORM=OVERRIDES]
+# Use: make [BUILD TARGET] [PLATFORM=OVERRIDES]
 #
 # Build Targets:
 #      <FILE>.i - Builds <FILE>.i preprocessed file
@@ -45,18 +45,11 @@ STD = c99
 # General Flags
 GFLAGS = -std=$(STD) -g -Wall -Werror -O0
 
-# Architectures Specific Flags
-ifeq ($(PLATFORM),MSP432)
-	CPU = cortex-m4
-	ARCH = armv7e-m
-	SPECS = nosys.specs
-	LINKER_FILE = ../msp432p401r.lds
-else
-	CPU = cortex-m0plus #x86_64
-	#ARCH = 
-	#SPECS =
-	#LINKER_FILE =
-endif
+# Architectures Specific Flags (Only MSP432 Platform)
+CPU = cortex-m4
+ARCH = armv7e-m
+SPECS = nosys.specs
+LINKER_FILE = ../msp432p401r.lds
 
 # Compiler Flags and Defines
 ifeq ($(PLATFORM),MSP432)
@@ -69,12 +62,10 @@ ifeq ($(PLATFORM),MSP432)
 	LDFLAGS = -Wl,-Map=$(TARGET).map -T $(LINKER_FILE)
 else
 	CC = gcc
-	#LD = ld
 	SIZE = size
 	OBJDUMP = objdump
 	CFLAGS = $(GFLAGS)
 	CPPFLAGS = -D$(PLATFORM) $(INCLUDES)
-	#LDFLAGS =
 endif
 
 OBJECTS = $(SOURCES:.c=.o)
