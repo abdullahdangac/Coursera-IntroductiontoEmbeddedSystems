@@ -12,7 +12,7 @@
 #------------------------------------------------------------------------------
 # Below are the instructions use for the C1M2 Assessment
 #
-# Use: make [BUILD TARGET] [PLATFORM=OVERRIDES]
+# Use: make [TARGET] [PLATFORM-OVERRIDES]
 #
 # Build Targets:
 #      <FILE>.i - Builds <FILE>.i preprocessed file
@@ -25,11 +25,15 @@
 #      clean - Removes all generated files
 #
 # Platform Overrides:
-#      PLATFORM - The target platform you are compiling for (MASP432, HOST)
+#      PLATFORM - The target platform you are compiling for (MSP432, HOST)
 #
 # Other Overrides:
 #      TARGET - Name of output executable
 #      STD - Compiler standard version (c89, c99)
+#
+# Compile Time Overrides:
+#      COURSE1 - Call course1 test implementation file from main (TRUE, FALSE)
+#      VERBOSE - Can enable/disable debug printing in stats file (TRUE, FALSE)
 #
 #------------------------------------------------------------------------------
 
@@ -39,8 +43,12 @@ PLATFORM = MSP432
 include sources.mk
 
 # Other Overrides
-TARGET = c1m2
+TARGET = final_assessment
 STD = c99
+
+# Compile Time (Switches) Overrides
+COURSE1 = FALSE
+VERBOSE = FALSE
 
 # General Flags
 GFLAGS = -std=$(STD) -g -Wall -Werror -O0
@@ -52,20 +60,26 @@ SPECS = nosys.specs
 LINKER_FILE = ../msp432p401r.lds
 
 # Compiler Flags and Defines
-ifeq ($(PLATFORM),MSP432)
+ifeq ($(PLATFORM), MSP432)
 	CC = arm-none-eabi-gcc
 	LD = arm-none-eabi-ld
 	SIZE = arm-none-eabi-size
-	OBJDUMP = arm-none-eabi-objdump
 	CFLAGS = $(GFLAGS) -mcpu=$(CPU) -march=$(ARCH) --specs=$(SPECS) -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 
 	CPPFLAGS = -D$(PLATFORM) $(INCLUDES)
 	LDFLAGS = -Wl,-Map=$(TARGET).map -T $(LINKER_FILE)
 else
 	CC = gcc
 	SIZE = size
-	OBJDUMP = objdump
 	CFLAGS = $(GFLAGS)
 	CPPFLAGS = -D$(PLATFORM) $(INCLUDES)
+endif
+
+ifeq ($(COURSE1), TRUE)
+	CPPFLAGS += -DCOURSE1
+endif
+
+ifeq ($(VERBOSE), TRUE)
+	CPPFLAGS += -DVERBOSE
 endif
 
 OBJECTS = $(SOURCES:.c=.o)
@@ -77,7 +91,7 @@ DEPENDENCIES = $(SOURCES:.c=.d)
 #                                BUILD RULES
 #******************************************************************************
 
-# Compile all object files and link into a final executable. Provide build report of code size and dump information about executable.
+# Compile all object files and link into a final executable. Provide build report of code size information about executable.
 .PHONY: build
 build: all
 
@@ -86,7 +100,6 @@ all : $(TARGET).out
 
 $(TARGET).out : $(OBJECTS)
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $^ -o $@
-	$(OBJDUMP) --disassemble $(TARGET).out > $(TARGET).dump
 	$(SIZE) -Btd $@
 
 # Generate the preprocessed output of all c-program implementation files.
@@ -101,10 +114,9 @@ $(TARGET).out : $(OBJECTS)
 %.asm: %.c
 	$(CC) -S $(CFLAGS) $(CPPFLAGS) $< -o $@
 
-# Generate the object file for all c-source files (but do not link) by specifying the object file you want to compile.
+# Generate the object file for all c-source files (but do not link) you want to compile.
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $<
-	$(OBJDUMP) --disassemble $@ > $@.dump
 
 # Compile all object files, but DO NOT link.
 .PHONY: compile-all

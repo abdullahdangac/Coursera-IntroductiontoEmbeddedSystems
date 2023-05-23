@@ -20,13 +20,15 @@
  *    Note: This program is not meant to be compiled nor efficient, but rather
  *          provide a handful of c-programming examples and coding guidelines.
  *
- * @author Abdullah Dangac (@abdullahdangac)
+ * @author Abdullah Dangac
  * @date 2023-4-30
  *
  */
 
 #ifndef __STATS_H__
 #define __STATS_H__
+
+#include "platform.h"
 
 /**
  * @brief Prints statistics (median, mean, maximum, minimum) of a data set

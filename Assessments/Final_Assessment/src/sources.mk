@@ -9,11 +9,12 @@
 #
 #*****************************************************************************
 
-ifeq ($(PLATFORM),MSP432)
+ifeq ($(PLATFORM), MSP432)
 	SOURCES = main.c \
                   memory.c \
-                  stats.c \
                   course1.c \
+                  stats.c \
+                  data.c \
                   system_msp432p401r.c \
                   startup_msp432p401r_gcc.c \
                   interrupts_msp432p401r_gcc.c
@@ -24,8 +25,9 @@ ifeq ($(PLATFORM),MSP432)
 else
 	SOURCES = main.c \
                   memory.c \
+                  course1.c \
                   stats.c \
-                  course1.c
+                  data.c
 
 	INCLUDES = -I../include/common
 endif
