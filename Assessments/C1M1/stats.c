@@ -24,6 +24,7 @@
  * @date 2023-4-30
  *
  */
+
 #include <stdio.h>
 #include "stats.h"
 
@@ -40,7 +41,6 @@ void main() {
                                 7,  87, 250, 230,  99,   3, 100,  90};
   
   print_statistics(test, SIZE);
-  return 0;
 }
 
 void print_array(const unsigned char* arr, unsigned int size) {
