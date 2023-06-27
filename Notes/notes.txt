@@ -1,0 +1,384 @@
+==========================================================
+    Embedded Systems
+==========================================================
+# Each embedded system has a special purpose and constraints in their system resources.
+  Limited Resources
+    - Processing
+    - Memory
+    - Peripherals
+
+# A variety of peripheral hardware maybe included in a micro controller. Some typical peripheral 
+functionality you will see include
+    - Communication
+    - Analog signal prcessing
+    - Input/Output
+    - Timing
+    - Processor support
+
+# Differentiates an embedded system from most other desktop or server computer systems
+    - Embedded Systems focus on efficient execution of code
+    - Embedded Systems have a limited amount of hardware
+    - Embedded Systems are sensitive to timing
+
+# Necessary Embedded Software Development components for developing a project
+    - Compiler
+    - Development Kit
+    - Version Control
+    - Programmer/Debugger
+    - Host Machine
+
+# Parts of a CPU
+    - Arithmetic Logic Unit (ALU)
+    - Registers
+    - Interrupt Controller
+
+# Parts of a Microcontroller
+    - Arithmetic Logic Unit (ALU)
+    - Registers
+    - Interrupt Controller
+    - Communication interfaces like UART, SPI, and I2C
+    - Digital-to-Analog Converters and PWMs
+
+# Architecture independence and software portability can be achieved by;
+    - Creating Hardware Abstraction Layers
+    - Using High level languages
+    - Designing software modularly
+
+
+# The datasheet does not typically provide information on configuration. 
+
+
+==========================================================
+    Software Development
+==========================================================
+
+# Software configuration management or SCM for short, is a process that is used by software teams to 
+develop software projects. This process contains a diverse set of goals and guidelines that dictate 
+the software processes for,
+    - version control,
+    - development process,
+    - environmental information,
+    - software build and release,
+    - software review,
+    - testing,
+    - support,
+    - defect tracking
+    - task management.
+
+
+# Legacy systems can be used for validation against newer products.
+
+# Intimate knowledge of SCM practices is important to the resurrection of legacy systems.
+
+
+# Purposes of a coding standard:
+    - Makes code readable
+    - Improves runtime efficiency
+    - Ensures consistency between various coders
+    - Helps protect copyright claims
+
+
+# IDEs (Integrated Development Environmens) provide a more interactive user interface than CLIs 
+(Command Line Interfaces).
+
+# CLIs are more flexible as most devices include support for them.
+
+
+# Building a software project requires five main steps:
+    1. pre-processing,
+    2. compiling,
+    3. assembling,
+    4. linking,
+    5. locating.
+
+
+==========================================================
+    GCC (GNU's Compiler Collection)
+==========================================================
+
+# In general, you can see all the tools of the native toolchain by running the command
+    $ ls -la /usr/bin/*gcc*
+
+# In general, you can see all the tools of the cross toolchain by running the command
+    $ ls -la /usr/bin/arm-none-eabi*
+
+# You can run the following command to do check for gcc version
+    $ gcc --version
+    
+# You can see what version of that application is currently installed (it tells you the location 
+of installation)
+    $ which gcc
+
+
+# GCC commands will have the following form 
+    $ gcc [OPTIONS] [FILES]
+
+# For compile and create executable file 
+    $ gcc -o main.out main.c
+
+# For run executable file
+    $ ./main.out
+
+
+
+# A linker file;
+    - Provides details on the memory size and location
+    - Maps compiled sections to physical memory
+    - Can check if memory was over allocated
+    - Can provide the Entry point to the program
+
+
+# -l flag is used to link the shared and static libraries.
+
+
+# For create executabele file with linker file
+    $ gcc main.c -o main.out -Xlinker -T linker_file.lds
+    $ gcc main.c -o main.out -Wl,-T, linker_file.lds
+
+
+# Linking compilation step makes sure that all the undefined symbols in the code are resolved.
+
+
+
+# The -Werror flag is an important flag for quality driven software. This causes compilation to 
+fail if any warnings occur. 
+
+
+# Assembly files usually have your .s as extension.
+
+# Your library files usually have a .a or a .lib.
+
+
+# The assembly code generated depends upon the
+    - Processor architecture
+    - Memory
+
+
+
+# Cmpile-time switch with preprocessor directives
+    #if defined ( KL25_PLATFROM ) && !defined ( MSP_PLATFORM)
+      kl25_init();
+    #elif defined ( MSP_PLATFORM ) &&  !defined( KL25_PLATFROM )
+      msp_init();
+    #else 
+    #error "Plaese specify one platfrom target"
+    #endif
+
+# A compile time switch can help:
+    - Make code portable
+    - Change the target files
+    - Link different files
+    - Change target architecture
+
+
+
+# Shared libraries are stored separate from the executable code in target.
+
+# The -shared option of gcc generates a shared object file for shared library.
+
+# If a program is linked against a static library then machine code of the used function is 
+copied  in the executable.
+
+
+
+# The sequence of the GCC compilation process
+    Preprocessing -> Compiling -> Linking -> Locating
+
+
+==========================================================
+    Makefile
+==========================================================
+
+# 'make' is a part of the GNU tool chain. But it is not a part of GCC tool chain.
+
+# Make can use 'shell functions' to ask the OS for compilation information.
+
+# Each rule in the makefile targets should start with a TAB.
+
+# If 'make' is called without any target specified, the first target in the makefile is executed. 
+
+
+# Variables for a makefile can be defined in
+    - Makefile
+    - Command line
+
+
+# Make can help generate the following files:
+    - Map Files
+    - Executable Files
+    - Object Files
+
+
+---------------------------------------------------------------------------------
+  Makefile Build Rule Form
+---------------------------------------------------------------------------------
+    target: prerequisite1 prerequisite2 prerequisite3
+        command1
+        command2
+---------------------------------------------------------------------------------
+# Running Build Rule Form
+---------------------------------------------------------------------------------
+    $ make <target>
+---------------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------------
+# Sample build rule (create object file by use the source files)
+---------------------------------------------------------------------------------
+    my_file.o: my_file.c my_file.h
+        gcc -c -o my_file.o my_file.c 
+---------------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------------
+# Sample build rule (create executable file by use the libs and object files)
+---------------------------------------------------------------------------------
+    main.out: main.o my_file.o
+        gcc -Wl,-map=main.map -I./inc -o main.out main.o my_file.o
+
+by use the variables
+    $(TARGET): $(OBJS)
+        $(CC) $(CFLAGS) $(INCLUDES) $(LDFLAGS) -o $(TARGET) $(OBJS)
+
+==============================
+ Automatic Variables
+    $@ -> Target
+    $^ -> All prerequisites
+    $< -> First prerequisites
+==============================
+
+by use the automatic variables
+        $(TARGET): $(OBJS)
+            $(CC) $(CFLAGS) $(INCLUDES) $(LDFLAGS) -o $@ $^
+---------------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------------
+# Compile but not link (create object file)
+---------------------------------------------------------------------------------
+    %.o: %.c
+		$(CC) -c $^ -o $@ $(CFLAGS)
+    
+example
+    main.o: main.c
+		$(CC) -c main.c -o main.o $(CFLAGS)
+---------------------------------------------------------------------------------
+
+    
+# Example Recursively Expanded Variables
+    CSTD=c89
+    CPU=cortex-m0plus
+    CC=rm-none-eabi-gcc
+
+
+# Example Simply Expanded Variables
+    ARCH:=$(shell arch)
+    CWD:=$(shell pwd)
+    OS:=$(shell uname)
+
+
+# C-Flags Example Variable
+    CFLAGS = -g -std=$(CSTD) -mcpu=$(CPU) -mthumb
+
+
+# Generate objects variable (OBJS)
+    OBJS:=$(SRCS:.c=.o)
+
+
+# Shell Command Variables
+    ARCH:=$(shell arch)
+    CWD:=$(shell pwd)
+    OS:=$(shell uname)
+
+
+# Conditional Variables
+    OS:=$(shell uname -s)
+    ifeq ($(OS),Linux)
+        CC=gcc
+    endif
+
+
+# Sources
+    INCLUDES=    \
+      -I./libs   \
+      -I./modem  \
+      -I./uart   \
+      -I./arch
+
+    SRCS=        \
+      ./main.c   \
+      ./memory.c \
+      ./uart.c   \
+      ./data.c
+
+
+# Make Functions
+    $(function arguments)
+
+
+# .PHONY protection is required to make sure make does not confuse a target name with an actual 
+file.
+---------------------------------------------------------------------------------
+.PHONY: all         # non-file target
+    all: $(TARGET)
+
+$(TARGET): $(OBJS)
+    command
+
+.PHONY: clean       # non-file target
+    clean:
+        command
+---------------------------------------------------------------------------------
+
+
+# Setting variables with input
+    $ make all CPU=cortex-m4
+    $ make all ARCH=arm
+    $ make all PLATFORM=MSP
+
+
+---------------------------------------------------------------------------------
+# Example for conditional compiling
+---------------------------------------------------------------------------------
+    ifeq ($(PLATFORM),MSP)
+        CPU=cortex-m4
+    endif
+
+    ifeq ($(PLATFORM),FRDM)
+        CPU=cortex-m0plus
+    endif
+---------------------------------------------------------------------------------
+
+
+# Assembler (as) and linker (ld) are a part of the GNU Binary utilities.
+
+
+# All memory sections compiled in output executable
+    $ arm-none-eabi-size -Atd demo.out
+  
+    Hex
+        $ arm-none-eabi-size -Bx demo.out
+
+    Decimal
+        $ arm-none-eabi-size -Bd demo.out
+
+  Each file section size
+    $ arm-none-eabi-size -Btd demo.out main.o my_file.o
+
+
+# All defined symbols (variables and code) in the output executable
+    $ arm-none-eabi-nm -S --defined -s demo.out
+    $ arm-none-eabi-nm -S --defined --size-sort -s demo.out
+    
+
+# Symbol Descriptions
+    - T : Code
+    - R : Read Only
+    - D : Initialized Data
+    - B : Uninitialized Data (BBS)
+
+
+# NM GNU utility is used to get the list of all defined symbols in the code files.
+
+
+# Objdump allows you to produce assembly code from a given object file
