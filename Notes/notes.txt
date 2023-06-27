@@ -231,6 +231,12 @@ copied  in the executable.
 ---------------------------------------------------------------------------------
 
 
+Automatic Variables
+    $@ -> Target
+    $^ -> All prerequisites
+    $< -> First prerequisites
+
+
 ---------------------------------------------------------------------------------
 # Sample build rule (create executable file by use the libs and object files)
 ---------------------------------------------------------------------------------
@@ -241,13 +247,6 @@ by use the variables
     $(TARGET): $(OBJS)
         $(CC) $(CFLAGS) $(INCLUDES) $(LDFLAGS) -o $(TARGET) $(OBJS)
 
-==============================
- Automatic Variables
-    $@ -> Target
-    $^ -> All prerequisites
-    $< -> First prerequisites
-==============================
-
 by use the automatic variables
         $(TARGET): $(OBJS)
             $(CC) $(CFLAGS) $(INCLUDES) $(LDFLAGS) -o $@ $^
@@ -257,12 +256,11 @@ by use the automatic variables
 ---------------------------------------------------------------------------------
 # Compile but not link (create object file)
 ---------------------------------------------------------------------------------
-    %.o: %.c
-		$(CC) -c $^ -o $@ $(CFLAGS)
-    
-example
     main.o: main.c
-		$(CC) -c main.c -o main.o $(CFLAGS)
+        $(CC) -c main.c -o main.o $(CFLAGS)
+
+    %.o: %.c
+        $(CC) -c $^ -o $@ $(CFLAGS)
 ---------------------------------------------------------------------------------
 
     
@@ -299,7 +297,7 @@ example
     endif
 
 
-# Sources
+# Source file example form
     INCLUDES=    \
       -I./libs   \
       -I./modem  \
