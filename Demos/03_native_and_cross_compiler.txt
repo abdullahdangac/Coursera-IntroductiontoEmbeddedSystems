@@ -1,0 +1,73 @@
+/******************************************************************************
+ * Copyright (C) 2017 by Alex Fosdick - University of Colorado
+ *
+ * Redistribution, modification or use of this software in source or binary
+ * forms is permitted as long as the files maintain this copyright. Users are 
+ * permitted to modify this and use it to learn about the field of embedded
+ * software. Alex Fosdick and the University of Colorado are not liable for any
+ * misuse of this material. 
+ *
+ *****************************************************************************/
+
+
+GCC is used in the following way on the command line
+  $ gcc [OPTIONS] [FILE-TO-COMPILE]
+
+
+=============================================================================
+
+  Native Compiler Example Commands
+
+=============================================================================
+
+This will compile and link. Also specifies the output file to store as the
+executable file (using the -o <FILE> option). All warnings will be treated as
+errors and use the c99 c-standard.
+  $ gcc -std=c99 -Werror -o main.c
+
+This will compile and stop before link (-c option). All warnings will be
+enabled, use the c89 C-standard. Also use the -v verbose option to print lots
+of informaiton of what gcc is doing to the terminal.
+  $ gcc -std=c89 -Wall -v -c main.c
+
+This will stop compilation after preprocessing has completed. Also specifies 
+the output file to store as the preprocessed file (using the -o <FILE> option). 
+All warnings will be treated as errors and use the c99 c-standard.
+  $ gcc -std=c99 -Werror -E -o main.i main.c 
+
+This command will use the "MSP" compile time switch to call the msp platform 
+print function. You define at the command line using the -D opion.
+  $ gcc -o main.out main.c kl25z.c msp.c my_file.c -DMSP
+
+This command will use the KL25Z compile time switch to call the kl25 platform 
+print function. 
+  $ gcc -o main.out main.c kl25z.c msp.c my_file.c -DKL25Z
+
+This command will not use any compile time switches and an error will print
+  $ gcc -o main.out main.c kl25z.c msp.c my_file.c
+
+
+=============================================================================
+
+  Cross-Compiler Example Commands
+
+=============================================================================
+
+This will compile but stop before linking and output the code in assembly in 
+a file called "main.s" (-S option). 
+  $ arm-none-eabi-gcc -std=c99 -Wall -S main.c
+
+Compile but stop before linking and outputs main.s assembly code. It will
+include debug symbols (-g option).
+  $ arm-none-eabi-gcc -g -std=c99 -Wall -S main.c
+
+This will compile and link main.c with specific architecture and libraries 
+that are needed for the target processor to run. 
+  $ arm-none-eabi-gcc main.c --specs=nosys.specs -mcpu=cortex-m4 -mthumb -std=c99 -Wall -march=armv7e-m 
+
+To compile in a linker file with the ARM cross compiler and generate a map 
+file.
+  $ arm-none-eabi-gcc -o main.out main.c my_file.c -Wl,-T msp432p401r.lds -Wl,-Map=main.map --specs=nosys.specs
+
+This will stop at the preprocessing step for the ARM Cortex-M4 processor
+  $ arm-none-eabi-gcc -mcpu=cortex-m4 -std=c99 -Werror -E -o main.i main.c 
