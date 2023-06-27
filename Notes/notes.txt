@@ -1,6 +1,7 @@
 ==========================================================
     Embedded Systems
 ==========================================================
+
 # Each embedded system has a special purpose and constraints in their system resources.
   Limited Resources
     - Processing
